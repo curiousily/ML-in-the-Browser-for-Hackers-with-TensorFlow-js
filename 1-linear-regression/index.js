@@ -13,12 +13,12 @@ function fibonacci(num){
     return seq;
 }
 
-const seq = fibonacci(100)
+const fibs = fibonacci(100)
 
-console.log(seq)
+//console.log(fibs)
 
-const xs = tf.tensor1d(seq.slice(0, seq.length - 1))
-const ys = tf.tensor1d(seq.slice(1))
+const xs = tf.tensor1d(fibs.slice(0, fibs.length - 1))
+const ys = tf.tensor1d(fibs.slice(1))
 
 const xmin = xs.min();
 const xmax = xs.max();
@@ -28,8 +28,8 @@ function norm(x) {
     return x.sub(xmin).div(xrange);
 }
 
-xs.print()
-ys.print()
+//xs.print()
+//ys.print()
 
 //console.log(xs)
 //console.log(ys)
@@ -41,23 +41,20 @@ ys.print()
 xsNorm = norm(xs)
 ysNorm = norm(ys)
 
-//xsNorm.print()
-//ysNorm.print()
+//console.log(xsNorm.dataSync())
+//console.log(ysNorm.dataSync())
 
 
-////const w = tf.variable(tf.truncatedNormal([1], mean=0.0, stddev=1.0))
-////const b = tf.variable(tf.zeros([1]))
-
-const w = tf.variable(tf.scalar(Math.random()))
+const a = tf.variable(tf.scalar(Math.random()))
 const b = tf.variable(tf.scalar(Math.random()))
 
 //w.print()
 //b.print()
 
 function predict(x) {
-  return tf.tidy(() => {
-    return x.mul(w).add(b)
-  });
+    return tf.tidy(() => {
+        return a.mul(x).add(b)
+    });
 }
 
 function loss(predictions, labels) {
@@ -78,12 +75,12 @@ for (let iter = 0; iter < numIterations; iter++) {
   });
 }
 
-w.print()
+a.print()
 b.print()
 
 // Predict on new value
 
-console.log(seq[seq.length - 1])
+console.log(fibs[fibs.length - 1])
 
-xTest = tf.tensor1d([2, 573147844013817200000])
+xTest = tf.tensor1d([2, 354224848179262000000])
 predict(xTest).print()
