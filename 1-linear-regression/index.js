@@ -1,3 +1,15 @@
+// What is a Tensor?
+
+const myFirstTensor = tf.scalar(42)
+console.log(myFirstTensor)
+myFirstTensor.print()
+
+
+const oneDimTensor = tf.tensor1d([1, 2, 3])
+oneDimTensor.print()
+
+// Preparing the training data
+
 function fibonacci(num){
     var a = 1, b = 0, temp;
     var seq = []
@@ -15,8 +27,6 @@ function fibonacci(num){
 
 const fibs = fibonacci(100)
 
-//console.log(fibs)
-
 const xs = tf.tensor1d(fibs.slice(0, fibs.length - 1))
 const ys = tf.tensor1d(fibs.slice(1))
 
@@ -28,28 +38,16 @@ function norm(x) {
     return x.sub(xmin).div(xrange);
 }
 
-//xs.print()
-//ys.print()
-
-//console.log(xs)
-//console.log(ys)
-
-//xs.print()
-//ys.print()
-
-
 xsNorm = norm(xs)
 ysNorm = norm(ys)
 
-//console.log(xsNorm.dataSync())
-//console.log(ysNorm.dataSync())
-
+// Building our model
 
 const a = tf.variable(tf.scalar(Math.random()))
 const b = tf.variable(tf.scalar(Math.random()))
 
-//w.print()
-//b.print()
+a.print()
+b.print()
 
 function predict(x) {
     return tf.tidy(() => {
@@ -57,30 +55,35 @@ function predict(x) {
     });
 }
 
+// Training
+
 function loss(predictions, labels) {
-  return predictions.sub(labels).square().mean();
+    return predictions.sub(labels).square().mean();
 }
 
 
-const numIterations = 10000;
 const learningRate = 0.5;
 const optimizer = tf.train.sgd(learningRate);
 
+const numIterations = 10000;
+const errors = []
+
 for (let iter = 0; iter < numIterations; iter++) {
-  optimizer.minimize(() => {
-      const predsYs = predict(xsNorm);
-      const e = loss(predsYs, ysNorm);
-      //e.print()
-      return e
-  });
+    optimizer.minimize(() => {
+        const predsYs = predict(xsNorm);
+        const e = loss(predsYs, ysNorm);
+        errors.push(e.dataSync())
+        return e
+    });
 }
 
-a.print()
-b.print()
+// Making predictions
 
-// Predict on new value
-
-console.log(fibs[fibs.length - 1])
+console.log(errors[0])
+console.log(errors[numIterations - 1])
 
 xTest = tf.tensor1d([2, 354224848179262000000])
 predict(xTest).print()
+
+a.print()
+b.print()
